@@ -11,25 +11,23 @@ architectury {
 }
 
 loom {
-    useFabricMixin = true
-    mixinConfigs = [
-			"bountifulbaubles-forge.mixins.json",
-			"bountifulbaubles.mixins.json"
-	]
+    forge {
+        mixinConfigs "bountifulbaubles-forge.mixins.json", "bountifulbaubles.mixins.json"
+    }
 }
 
 repositories {
     maven { url = "https://maven.theillusivec4.top/" }
-	maven {
-		// location of the maven that hosts JEI files
-		name = "Progwml6 maven"
-		url = "https://dvs1.progwml6.com/files/maven/"
-	}
-	maven {
-		// location of a maven mirror for JEI files, as a fallback
-		name = "ModMaven"
-		url = "https://modmaven.dev"
-	}
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
 }
 
 dependencies {
@@ -40,21 +38,21 @@ dependencies {
 
 //    modImplementation "top.theillusivec4.curios:curios-forge:${rootProject.curios_forge_version}"
 //    modApi "top.theillusivec4.curios:curios-forge:${rootProject.curios_forge_version}:api"
-    modCompile "top.theillusivec4.curios:curios-forge:${rootProject.curios_forge_version}"
+    modImplementation "top.theillusivec4.curios:curios-forge:${rootProject.curios_forge_version}"
 
 //    // compile against the JEI API but do not include it at runtime
 //    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
 //    // at runtime, use the full JEI jar
 //    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-	modCompile "mezz.jei:jei-${rootProject.jei_forge_version}"
+    modImplementation "mezz.jei:jei-${rootProject.jei_forge_version}"
 
 
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentForge")) {
+    /*runtimeOnly(project(path: ":common", configuration: "transformDevelopmentForge")) {
         transitive = false
-    }
+    }*/
     shadow(project(path: ":common", configuration: "transformProductionForge")) {
         transitive = false
     }
@@ -75,8 +73,11 @@ shadowJar {
     classifier "shadow"
 }
 
+def files = shadowJar.outputs.files.singleFile
+
 remapJar {
     dependsOn(shadowJar)
-    input.set(shadowJar.archivePath)
+
+    inputFile.set(files)
     classifier "forge"
 }

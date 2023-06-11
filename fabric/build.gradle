@@ -11,18 +11,18 @@ architectury {
 }
 
 loom {
-	accessWidener "src/main/resources/bountifulbaubles.accesswidener"
+    accessWidenerPath = file("src/main/resources/bountifulbaubles.accesswidener")
 }
 
 repositories {
-	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://ladysnake.jfrog.io/artifactory/mods'
-	}
-	maven {
-		name = "TerraformersMC"
-		url = "https://maven.terraformersmc.com/"
-	}
+    maven {
+        name = 'Ladysnake Mods'
+        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
     maven { url 'https://jitpack.io' }
 //	maven {
 //		name = "NerdHubMC"
@@ -31,8 +31,8 @@ repositories {
 }
 
 dependencies {
-    modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modCompile "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
     // modCompile "me.shedaniel:architectury:${rootProject.architectury_version}:fabric"
     compileOnly "com.google.code.findbugs:jsr305:3.+"
@@ -42,28 +42,28 @@ dependencies {
 //	// Includes Cardinal Components API as a Jar-in-Jar dependency (optional but recommended)
 //	include "io.github.onyxstudios.Cardinal-Components-API:<MODULE>:<VERSION>"
 
-	// Need to specify cardinal components dependencies ourself, since the version trinkets wants isn't on the maven, and we want CC for ourself anyway
-	modImplementation("dev.emi:trinkets:${rootProject.trinkets_version}") {
-		transitive = false
-	}
-	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${rootProject.cardinal_components_version}"
-	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${rootProject.cardinal_components_version}"
+    // Need to specify cardinal components dependencies ourself, since the version trinkets wants isn't on the maven, and we want CC for ourself anyway
+    modImplementation("dev.emi:trinkets:${rootProject.trinkets_version}") {
+        transitive = false
+    }
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${rootProject.cardinal_components_version}"
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${rootProject.cardinal_components_version}"
 
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${rootProject.cardinal_components_version}"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${rootProject.cardinal_components_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${rootProject.cardinal_components_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${rootProject.cardinal_components_version}"
 
-	include "com.electronwill.night-config:toml:${rootProject.nightconfig_version}"
-	include "com.electronwill.night-config:core:${rootProject.nightconfig_version}"
+    include "com.electronwill.night-config:toml:${rootProject.nightconfig_version}"
+    include "com.electronwill.night-config:core:${rootProject.nightconfig_version}"
 
     modImplementation "com.github.CrimsonDawn45:Fabric-Shield-Lib:${rootProject.fabric_shield_lib_version}-${rootProject.minecraft_version}"
-	include "com.github.CrimsonDawn45:Fabric-Shield-Lib:${rootProject.fabric_shield_lib_version}-${rootProject.minecraft_version}"
+    include "com.github.CrimsonDawn45:Fabric-Shield-Lib:${rootProject.fabric_shield_lib_version}-${rootProject.minecraft_version}"
 
-    compileOnly(project(path: ":common")) {
+    implementation(project(path: ":common")) {
         transitive = false
     }
-    runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
+    /*runtimeOnly(project(path: ":common", configuration: "transformDevelopmentFabric")) {
         transitive = false
-    }
+    }*/
     shadow(project(path: ":common", configuration: "transformProductionFabric")) {
         transitive = false
     }
@@ -79,11 +79,11 @@ processResources {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    classifier "shadow"
+    archiveClassifier = "shadow"
 }
 
 remapJar {
     dependsOn(shadowJar)
     input.set(shadowJar.archivePath)
-    classifier "fabric"
+    archiveClassifier = "fabric"
 }

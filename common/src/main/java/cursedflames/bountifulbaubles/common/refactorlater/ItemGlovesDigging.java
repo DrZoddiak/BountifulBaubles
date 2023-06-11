@@ -66,14 +66,14 @@ public abstract class ItemGlovesDigging extends BBEquipmentItem {
 	public boolean canHarvest(BlockState block) {
 //		return this.tier.getMiningLevel() >= block.getBlock().getHarvestLevel();
 		for (Item item : miningLevelTools) {
-			if (item.isEffectiveOn(block)) {
+			if (item.isSuitableFor(block)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
 	
-	@Override
 	public boolean isEffectiveOn(BlockState block) {
 		return this.canHarvest(block);
 	}

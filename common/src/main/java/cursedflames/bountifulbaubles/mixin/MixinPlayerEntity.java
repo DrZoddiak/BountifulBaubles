@@ -19,7 +19,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
@@ -27,16 +26,10 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import static cursedflames.bountifulbaubles.common.equipment.StepAssist.STEP_HEIGHT_INCREASED;
-import static cursedflames.bountifulbaubles.common.equipment.StepAssist.STEP_HEIGHT_SNEAKING;
-import static cursedflames.bountifulbaubles.common.equipment.StepAssist.STEP_HEIGHT_VANILLA;
 
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity extends LivingEntity {
@@ -89,7 +82,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
         }
     }
 
-    @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
+    @ModifyVariable(method = "applyDamage", at = @At(value = "LOAD"), ordinal = 0, argsOnly = true)
     private float onApplyDamageAmount(float amount, DamageSource damageSource) {
         if (damageSource.isFire()) {
             return FireResist.getDamageMultiplier((PlayerEntity)(Object)this) * amount;
@@ -98,7 +91,8 @@ public abstract class MixinPlayerEntity extends LivingEntity {
     }
 
     // === MaxHp undying ===
-    @Inject(method = "applyDamage",
+	//Hard Crash Here
+    /*@Inject(method = "applyDamage",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setHealth(F)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onApplyDamage(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
@@ -120,7 +114,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 				Teleport.teleportPlayerToSpawn(self.world, self, BountifulBaubles.config.MAGIC_MIRROR_INTERDIMENSIONAL);
 			}
         }
-    }
+    }*/
 
     // === Gluttony pendant ===
 	@Inject(method = "eatFood", at = @At("HEAD"))
@@ -162,7 +156,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	// === Digging gloves ===
 	// TODO can we make this mixin more compatible?
-	@Inject(method = "isUsingEffectiveTool", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "canHarvest", at = @At("RETURN"), cancellable = true)
 	private void onIsUsingEffectiveTool(BlockState blockState, CallbackInfoReturnable<Boolean> cir) {
     	// Already using an effective tool, so we don't care
     	if (cir.getReturnValueZ()) return;

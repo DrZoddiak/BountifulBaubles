@@ -8,11 +8,11 @@ import cursedflames.bountifulbaubles.common.refactorlater.wormhole.ContainerWorm
 import cursedflames.bountifulbaubles.common.refactorlater.wormhole.IWormholeTarget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -142,8 +142,8 @@ public class ScreenWormhole extends Screen implements ScreenHandlerProvider<Cont
 	private void pageChange(int page) {
 		for (int i = 0; i<16; i++) {
 			int listIndex = page*16+i;
-			AbstractButtonWidget button = buttons.get(i);
-			AbstractButtonWidget pinButton = buttons.get(i+16);
+			ClickableWidget button = buttons.get(i);
+			ClickableWidget pinButton = buttons.get(i+16);
 			if (listIndex<container.targets.size()) {
 				button.visible = true;
 				pinButton.visible = true;
@@ -160,8 +160,8 @@ public class ScreenWormhole extends Screen implements ScreenHandlerProvider<Cont
 				button.setMessage(new LiteralText(""));
 			}
 		}
-		AbstractButtonWidget prev = buttons.get(32);
-		AbstractButtonWidget next = buttons.get(33);
+		ClickableWidget prev = buttons.get(32);
+		ClickableWidget next = buttons.get(33);
 		boolean pageButtons = container.targets.size()>16;
 		prev.visible = pageButtons;
 		next.visible = pageButtons;
@@ -171,7 +171,7 @@ public class ScreenWormhole extends Screen implements ScreenHandlerProvider<Cont
 //		CompoundNBT tag = new CompoundNBT();
 		if (index+page*16>=container.targets.size())
 			return;
-		CompoundTag tag = container.targets.get(index+page*16).toNBT();
+		NbtCompound tag = container.targets.get(index+page*16).toNBT();
 		NetworkHandler.sendToServer(new C2SPacketDoWormhole(tag));
 		// TODO not sure if this call was actually important or not
 //		client.player.updateSubmergedInWaterState();
