@@ -91,10 +91,9 @@ public abstract class MixinPlayerEntity extends LivingEntity {
     }
 
     // === MaxHp undying ===
-	//Hard Crash Here
-    /*@Inject(method = "applyDamage",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setHealth(F)V"),
-            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "applyDamage",
+            at = @At(value = "RETURN", target = "Lnet/minecraft/entity/player/PlayerEntity;setHealth(F)V"),
+    cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onApplyDamage(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
     	PlayerEntity self = (PlayerEntity)(Object)this;
         // Capturing this as a local breaks on Forge
@@ -114,7 +113,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 				Teleport.teleportPlayerToSpawn(self.world, self, BountifulBaubles.config.MAGIC_MIRROR_INTERDIMENSIONAL);
 			}
         }
-    }*/
+    }
 
     // === Gluttony pendant ===
 	@Inject(method = "eatFood", at = @At("HEAD"))
